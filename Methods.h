@@ -15,29 +15,6 @@ using bsoncxx::builder::basic::kvp;
 using bsoncxx::builder::basic::make_document;
 
 
-//Get Mongodb database URI string from system environment variables
-std::string getEnvironmentVariable(std::string environmentVarKey)
-{
-	char* pBuffer = nullptr;
-	size_t size = 0;
-	auto key = environmentVarKey.c_str();
-	// Use the secure version of getenv, ie. _dupenv_s to fetch environment variable.
-	if (_dupenv_s(&pBuffer, &size, key) == 0 && pBuffer != nullptr)
-	{
-		std::string environmentVarValue(pBuffer);
-		free(pBuffer);
-		return environmentVarValue;
-	}
-	else
-	{
-		return "";
-	}
-}
-
-//Global variable to store URI
-auto mongoURIStr = getEnvironmentVariable("mongodb+srv://Padmanabhan:password12345@cluster0.hzbnr30.mongodb.net/?retryWrites=true&w=majority");
-
-
 //Load the HTML content and render it using mustache
 string getView(const string& filename, context& x) {
 	auto page = load(filename + ".html");
