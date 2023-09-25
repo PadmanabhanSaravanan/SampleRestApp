@@ -10,15 +10,15 @@ RUN apt-get update && \
 WORKDIR /app
 
 # Install mongo-c-driver
-RUN wget https://github.com/mongodb/mongo-c-driver/releases/download/1.17.6/mongo-c-driver-1.17.6.tar.gz && \
-    tar -xzvf mongo-c-driver-1.17.6.tar.gz && \
-    cd mongo-c-driver-1.17.6 && \
+RUN wget https://github.com/mongodb/mongo-c-driver/releases/download/1.24.4/mongo-c-driver-1.24.4.tar.gz && \
+    tar -xzvf mongo-c-driver-1.24.4.tar.gz && \
+    cd mongo-c-driver-1.24.4 && \
     cd build && \
-    cmake -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF .. && \
     cmake .. && \
-    cd .. \
-    cd .. \
-    rm mongo-c-driver-1.17.6.tar.gz
+    cmake --build . --config RelWithDebInfo --target install && \
+    cd .. && \
+    cd .. && \
+    rm mongo-c-driver-1.24.4.tar.gz
 
 # Install mongo-cxx-driver
 RUN wget https://github.com/mongodb/mongo-cxx-driver/releases/download/r3.7.0/mongo-cxx-driver-r3.7.0.tar.gz && \
