@@ -26,7 +26,7 @@ RUN wget https://github.com/mongodb/mongo-cxx-driver/releases/download/r3.7.0/mo
     cd mongo-cxx-driver-r3.7.0 && \
     cd build && \
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local .. && \
-    cmake --build . --target uninstall && \
+    cmake --build . --target install && \
     cd .. && \
     cd .. && \
     rm mongo-cxx-driver-r3.7.0.tar.gz
