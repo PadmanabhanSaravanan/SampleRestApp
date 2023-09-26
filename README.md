@@ -4,258 +4,116 @@ This documentation covers the set up an environment with MongoDB C/C++ drivers, 
 
 ## **Table of Content**
 
+* [**Architecture of TodoApplication**](#architecture-of-todoapplication)
+* [**Boost Framework**](#boost-framework)
+* [**Crow Framework**](#crow-framework)
+* [**CMake**](#cmake)
+* [**Create Source files**](#create-source-files)
 * [**Setup MongoDB database**](#setup-mongodb-database)
 * [**Essential Packages on Ubuntu**](#essential-packages-on-ubuntu)
 * [**MongoDB C Driver**](#mongodb-c-driver)
 * [**MongoDB C++ Driver**](#mongodb-c++-driver)
-* [**Crow Framework**](#crow-framework)
-* [**Boost Libraries**](#boost-libraries)
-* [**Create Source files**](#create-source-files)
+* [**Extract Crow Framework**](#extract-crow-framework)
+* [**Extract Boost Libraries**](#extract-boost-libraries)
 * [**Build the Application**](#build-the-application)
 * [**Run the Application**](#run-the-application)
 
-## **Setup MongoDB database**
+## **Architecture of TodoApplication**
 
-**1. Sign in to MongoDB Atlas**
+![image](image.png)
 
-* If you already have a MongoDB Atlas account, navigate to the [MongoDB Atlas login page](https://account.mongodb.com/account/login) and enter your credentials.
-* If you don't have an account, you'll need to create one. Click on "Signup" and provide the required details.
-* After clicking on signup you will be sent email confirmation after confirmation you login into mongodb atlas.
+{{1}}
+![image](image3.png)
 
-**2. Choose the Free Version**
+{{2}}
+![image](image2.png)
 
-* After logging in (or signing up and logging in), you'll be presented with an option to build a new deployment. Choose the "Free" tier, which is known as the M0 Sandbox tier. This tier will provide you with 512 MB of storage and is suitable for small-scale development.
-* Choose the cloud provider and region that's most suitable for you. Some options might be grayed out, as they're not available for the free tier.
+{{3}}
+![image](image1.png)
 
-**3. Setup Cluster**
+## **Boost Framework**
 
-* Once you've chosen the free version, MongoDB Atlas will begin setting up your cluster. This process may take a few minutes.
+Boost C++ Libraries, often referred to simply as Boost, is a collection of peer-reviewed, portable, and high-quality libraries that augment and complement the C++ Standard Library. These libraries facilitate tasks ranging from low-level programming chores to high-level, domain-specific operations.
 
-**4. Create Database User**
+**Why we need Boost:**
 
-* Fill in the desired username and password for this user. Be sure to note this password, as you will need it later.
-* Enable access for any network(s) that need to read and write data to your cluster.(My Local Environment)
-* Set entries to your IP Access List (0.0.0.0)
-* Finish and close
+* **Filling Gaps**: Boost provides functionalities that might be missing from the C++ Standard Library, offering a more comprehensive set of tools for developers.
 
-**5. Create Database & Collection**
+* **Rapid Prototyping**: Given its wide range of utilities and algorithms, Boost can speed up the development process, allowing for faster prototyping and development.
 
-* From the Data Service dashboard, click on the "Database" button.
-* Then, click on the "Browse Collections" button.
-* click "Add My Own Data" button that will navigate to create database.
-* Name the database "TodoRecords".
-* Name the collection "TodoCollection".
-* Then,click on create.
+* **High Quality**: Boost libraries undergo rigorous peer review, ensuring they meet high standards of design, performance, and reliability.
 
-**6. Update the URI with Password**
+* **Portability**: Boost is designed to be cross-platform and works across various compilers, ensuring that code written using Boost libraries remains portable.
 
-* Go back to the Data Service dashboard and click on the "CONNECT" button.
-* Choose "Connect your application".
-* Select the C++ driver and the latest version.
-* You'll be given a connection string (URI). Replace <password> in this URI with the password of the user you just created.
-* Copy the URI for further reference.
+* **Influence on C++ Standard**: Many features originally developed in Boost have made their way into the C++ Standard Library. Using Boost can, in a way, provide developers with a glimpse into future C++ standards and practices.
 
-## **Essential Packages on Ubuntu**
+* **Advanced Features**: Boost offers advanced libraries for tasks like asynchronous I/O (Boost.Asio), multi-threading, and even metaprogramming, which can significantly enhance a C++ application's capabilities.
 
-**1. Updates the package**
+* **Consistency**: By providing a consistent interface across its libraries, Boost makes it easier for developers to learn and use different parts of the collection.
 
-```
-apt-get update
-```
+**Reference**:
 
-This command updates the package list on your Ubuntu system. This ensures that you have the latest information about package versions and their dependencies.
-
-* It's a good practice to run `apt-get update` before installing any new packages.
-* This ensures that the package manager is aware of the most recent versions of packages and can resolve dependencies accordingly.
-
-**2. Install Required Packages**
-
-```
-apt-get install -y sudo vim wget unzip g++ cmake curl pkg-config libssl-dev libsasl2-dev git python3
-``` 
-
-This command installs a list of specified packages. The -y flag automatically confirms the installation, avoiding any prompts to the user.
-
-* `sudo`: Allows users to run programs with the security privileges of the superuser or root.
-* `vim`: A highly configurable text editor, an improvement over the vi editor.
-* `wget`: A utility for non-interactive downloading of files from the web.
-* `unzip`: Extracts files from ZIP archives.
-* `g++`: The GNU C++ compiler.
-* `cmake`: Cross-platform tool to manage the build process of software.
-* `curl`: Command-line tool for transferring data with URL syntax.
-* `pkg-config`: Helper tool used when compiling applications and libraries.
-* `libssl-dev`: Development files for OpenSSL (used for implementing SSL and TLS).
-* `libsasl2-dev`: Development files for the Cyrus SASL library (authentication abstraction layer).
-* `git`: Distributed version control system.
-* `python3`: The Python 3.x interpreter.
-
-> Note: By using the -y flag with apt-get install, we're telling the system to assume "yes" as an answer to all prompts, making the installation non-interactive.
-
-## **MongoDB C Driver**
-
-The MongoDB C driver, often referred to as libmongoc, is essential for several reasons:
-
-* `Foundation`: It provides a foundational layer for communicating with MongoDB in C.
-* `Performance`: Being written in C, it offers high-performance interactions with the database.
-* `Compatibility`: It ensures consistent behavior and compatibility with various MongoDB server versions.
-* `Basis for Other Drivers`: Higher-level MongoDB drivers, like the C++ driver, are built upon it.
-* `Portability`: It can be used in environments where only C libraries are feasible or preferred.
-
-**1. Download the MongoDB C Driver**
-
-```
-wget https://github.com/mongodb/mongo-c-driver/releases/download/1.24.4/mongo-c-driver-1.24.4.tar.gz
-```
-
-This command downloads the MongoDB C Driver source code tarball from the given URL.
-
-* `wget` is a utility for non-interactive downloading of files from the web.
-* It will fetch the version 1.24.4 of the MongoDB C Driver.
-
-**2. Unzip the MongoDB C Driver**
-
-```
-tar -xzvf mongo-c-driver-1.24.4.tar.gz
-```
-
-This command extracts the tarball (compressed file) that was downloaded.
-
-* `tar` is a utility tool for archiving.
-* The flags `-xzvf` stand for:
-
-  * -x: Extract.
-  * -z: Through gzip.
-  * -v: Verbose mode; show the progress in the terminal.
-  * -f: Filename; use archive file.
-
-**3. Navigate into mongo-c-driver-1.24.4/build to make configuration process**
-
-`mongo-c-driver-1.24.4/build`
-
-This command runs the CMake configuration process, which sets up the build according to the specifications given in the CMake files.
-
-```
-cmake ..
-```
-
-* `cmake` is a tool that helps in the build process for software projects.
-* The .. argument tells CMake to use the `CMakeLists.txt` file in the parent directory as its source.
-
-This command tells CMake to start the build process with the given configuration and then install the built software.
-
-```
-cmake --build . --config RelWithDebInfo --target install
-```
-
-* `--config RelWithDebInfo`: Build type configuration, typically used to provide a mix of optimization and debugging information.
-* `--target install`: Specifies that after building, the software should be installed (typically to system directories).
-
-## **MongoDB C++ Driver**
-
-The MongoDB C++ driver, often termed mongocxx, is crucial for several reasons:
-
-* `Object-Oriented Abstraction`: It provides a C++ interface, allowing developers to interact with MongoDB in a more idiomatic C++ way.
-* `Feature-Rich`: It offers a more extensive set of functionalities tailored for C++ development, including exception handling and RAII principles.
-* `Type Safety`: Leveraging C++'s strong type system, it ensures safer database interactions.
-* `Integration`: Easily integrates with modern C++ applications and frameworks.
-* `Dependence on C Driver`: It's built on top of the C driver, ensuring consistent and efficient database communication.
-
-**1. Download MongoDB C++ Driver**
-
-```
-wget https://github.com/mongodb/mongo-cxx-driver/releases/download/r3.7.0/mongo-cxx-driver-r3.7.0.tar.gz
-```
-
-This command downloads the MongoDB C++ Driver source code tarball from the provided URL.
-
-**2. Unzip the Mongodb C++ driver**
-
-```
-tar -xzvf mongo-cxx-driver-r3.7.0.tar.gz
-```
-
-This command extracts the tarball (compressed file) that was downloaded.
-
-**3. Navigate into mongo-cxx-driver-r3.7.0/build to make configuration process**
-
-`mongo-cxx-driver-r3.7.0/build`
-
-This command configures the build process using CMake.
-
-```
-cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
-```
-
-* `cmake` is a cross-platform tool used for build process configuration.
-* `-G "Unix Makefiles"`: This specifies that the output of CMake should be makefiles tailored for Unix systems.
-* `-DCMAKE_BUILD_TYPE=Release`: Sets the type of build to "Release", which optimizes the resulting binaries for performance.
-* `-DCMAKE_INSTALL_PREFIX=/usr/local`: Specifies the directory where the driver will be installed.
-
-This command instructs CMake to start the build process and then install the built software.
-
-```
-cmake --build . --target install
-```
-
-* `--target install`: Indicates that after building, the software should be installed (typically to system directories).
+* https://www.boost.org/users/
 
 ## **Crow Framework**
 
-The Crow framework is essential for the following reasons:
+Crow is a fast, lightweight, and easy-to-use C++ micro web framework (similar in spirit to Flask for Python or Sinatra for Ruby). It's designed for creating web services with a minimal amount of code and overhead. Here are some of the characteristics and features of Crow:
 
-* `Lightweight`: Crow is a minimalistic framework, making it quick and efficient for building web services.
-* `Ease of Use`: With a simple and intuitive API, developers can create endpoints with ease.
-* `C++ Integration`: Designed for C++, it allows seamless integration with other C++ projects and libraries.
-* `Header-Only`: Being header-only simplifies dependencies, facilitating easier deployment.
-* `Performance`: Written in C++, Crow provides high performance, especially when compared to other interpreted web frameworks.
+* **Header-only**: Crow is primarily distributed as a header-only library, which means you don't need to compile it separately; including the header files in your project is typically sufficient.
 
-**1. Download the Crow framework**
+* **Fast**: Crow is optimized for performance and can handle a large number of requests with minimal overhead.
 
-```
-wget https://github.com/CrowCpp/Crow/releases/download/v1.0%2B5/crow-v1.0+5.tar.gz
-```
+* **Simple to Use**: With Crow, setting up a basic web server can be done with just a few lines of code.
 
-Downloads the Crow framework source code tarball from the provided URL.
+* **Middleware Support**: Crow allows you to use middleware components that can process requests or modify responses. This is useful for functionalities like logging, error handling, or authentication.
 
-**2. Create a new directory named crow. This directory will be used to house the extracted files.**
+* **JSON Support**: Crow has built-in support for JSON, making it easy to create RESTful APIs.
 
-```
-mkdir crow
-```
+* **WebSockets**: Crow also has basic support for WebSockets, enabling real-time communication between the server and the client.
 
-**3. Unzip the crow framework into crow directory**
+* **Route-based Request Handling**: Define handlers for specific routes and HTTP methods. For example, you can easily set up a handler to process GET requests for a specific URL path.
 
-```
-tar xvfz crow-v1.0+5.tar.gz -C crow --strip-components=1
-```
+<br>
 
-* `tar` is a utility used for archiving.
-* `-C crow`: Specifies the directory where the extracted files will be placed.
-* `--strip-components=1`: Modifies the extraction process to skip the top-level directory inside the tarball, essentially flattening the structure by one level. This can be particularly useful when the tarball contains a single top-level directory that you want to bypass.
+`Crow` is built on top of the `Boost` libraries, particularly the Boost.Asio library. Here's how Crow is interconnected with Boost:
 
-## **Boost Libraries**
+* **Boost.Asio for Networking:** Boost.Asio provides a scalable and efficient asynchronous I/O framework that's suitable for building network applications. Crow uses Boost.Asio to handle all the low-level networking tasks, such as managing sockets, handling incoming connections, and processing HTTP requests asynchronously. By leveraging Boost.Asio, Crow can handle multiple concurrent connections with efficient use of resources.
 
-The Boost libraries are essential for Crow because:
+* **Boost for Multi-threading:** Crow uses Boost's threading libraries to manage threads in its server. This allows Crow to handle multiple requests concurrently, improving the throughput of the server.
 
-* `Dependenc`y: Crow internally relies on some of Boost's features for its functionality.
-* `Asio`: Crow uses Boost.Asio for asynchronous I/O operations, enabling efficient networking.
-* `Portability`: Boost provides consistent implementations across different platforms, ensuring Crow's cross-platform compatibility.
-* `Advanced Features`: Boost offers utilities that enhance Crow's capabilities, such as multi-threading support.
-* `Maturity`: Boost is a mature, well-tested library, which adds robustness to Crow's operations.
+* **Boost for Utilities:** Crow also takes advantage of various other Boost utilities and data structures to manage its internal workings. This includes things like containers, algorithms, and smart pointers.
 
-**1. Download Boost Libraries**
+* **Headers and Dependencies:** Because Crow is built on Boost, if you inspect Crow's header files, you'll often see Boost headers being included and Boost types being used throughout the code.
 
-```
-wget https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.tar.gz
-```
+* **Maturity and Stability:** By building on top of Boost, Crow can benefit from the maturity, stability, and performance of Boost libraries. Boost is one of the most widely used C++ libraries, with a long history of rigorous testing and development.
 
-Downloads the Boost Libraries from the provided URL.
+**Reference**:
 
-**2. Unzip the boost libraries**
+* https://crowcpp.org/master/
 
-```
-tar -xzvf boost_1_83_0.tar.gz
-```
+## **CMake**
+
+CMake is an `open-source`, `cross-platform` family of tools designed to build, test, and package software. It controls the software compilation process using simple, platform- and compiler-independent configuration files. CMake generates native makefiles and workspaces tailored for the compiler environment of the user's choice.
+
+**Why we need CMake:**
+
+* **Cross-Platform Compatibility**: One of the primary reasons for using CMake is its ability to work across different platforms, from Windows to macOS to various flavors of Linux and more. Write once, compile anywhere.
+
+* **Out-of-Source Builds**: CMake supports building projects outside of the source directory. This keeps build artifacts separate from the source code, maintaining a clean project directory.
+
+* **Generates Native Build Systems**: CMake isn't a compiler or a direct build system. Instead, it generates files for various build systems, such as UNIX Makefiles, Visual Studio project files, Xcode projects, and more. This flexibility allows developers to use their preferred tools.
+
+* **Modularity and Scripting**: CMakeLists.txt files can be arranged in a hierarchical manner, making it possible to manage even large-scale projects with multiple subcomponents. CMake's scripting capabilities also allow for advanced configurations and build processes.
+
+* **Customizable Build Configurations**: With CMake, developers can easily set up different build configurations, like Debug, Release, or RelWithDebInfo, tailoring the build process to different needs.
+
+* **Find Packages Easily**: CMake includes a mechanism to find libraries and packages that are installed on a system, making it simpler to include and link against them. This reduces the hassle of manually setting include paths and library paths.
+
+* **Toolchain Files for Cross-Compilation**: CMake supports cross-compilation through the use of toolchain files. These files define the tools (compilers, linkers, etc.) to be used, making it easier to compile software for different targets from a single machine.
+
+* **Continuous Integration & Testing**: With the help of the CTest tool bundled with CMake, it's easier to integrate testing directly into the build process, facilitating continuous integration workflows.
+
+* **Community and Ecosystem**: Given its popularity, there's a strong community around CMake, offering modules, scripts, and tools that extend its functionality.
 
 ## Create Source files
 
@@ -657,6 +515,233 @@ set_target_properties(restapicpp PROPERTIES
 ```
 
 The project will be compiled with C++17, and this standard is required. If the compiler does not support C++17, a configuration error will occur.
+
+## **Setup MongoDB database**
+
+**1. Sign in to MongoDB Atlas**
+
+* If you already have a MongoDB Atlas account, navigate to the [MongoDB Atlas login page](https://account.mongodb.com/account/login) and enter your credentials.
+* If you don't have an account, you'll need to create one. Click on "Signup" and provide the required details.
+* After clicking on signup you will be sent email confirmation after confirmation you login into mongodb atlas.
+
+**2. Choose the Free Version**
+
+* After logging in (or signing up and logging in), you'll be presented with an option to build a new deployment. Choose the "Free" tier, which is known as the M0 Sandbox tier. This tier will provide you with 512 MB of storage and is suitable for small-scale development.
+* Choose the cloud provider and region that's most suitable for you. Some options might be grayed out, as they're not available for the free tier.
+
+**3. Setup Cluster**
+
+* Once you've chosen the free version, MongoDB Atlas will begin setting up your cluster. This process may take a few minutes.
+
+**4. Create Database User**
+
+* Fill in the desired username and password for this user. Be sure to note this password, as you will need it later.
+* Enable access for any network(s) that need to read and write data to your cluster.(My Local Environment)
+* Set entries to your IP Access List (0.0.0.0)
+* Finish and close
+
+**5. Create Database & Collection**
+
+* From the Data Service dashboard, click on the "Database" button.
+* Then, click on the "Browse Collections" button.
+* click "Add My Own Data" button that will navigate to create database.
+* Name the database "TodoRecords".
+* Name the collection "TodoCollection".
+* Then,click on create.
+
+**6. Update the URI with Password**
+
+* Go back to the Data Service dashboard and click on the "CONNECT" button.
+* Choose "Connect your application".
+* Select the C++ driver and the latest version.
+* You'll be given a connection string (URI). Replace <password> in this URI with the password of the user you just created.
+* Copy the URI for further reference.
+
+## **Essential Packages on Ubuntu**
+
+**1. Updates the package**
+
+```
+apt-get update
+```
+
+This command updates the package list on your Ubuntu system. This ensures that you have the latest information about package versions and their dependencies.
+
+* It's a good practice to run `apt-get update` before installing any new packages.
+* This ensures that the package manager is aware of the most recent versions of packages and can resolve dependencies accordingly.
+
+**2. Install Required Packages**
+
+```
+apt-get install -y sudo vim wget unzip g++ cmake curl pkg-config libssl-dev libsasl2-dev git python3
+``` 
+
+This command installs a list of specified packages. The -y flag automatically confirms the installation, avoiding any prompts to the user.
+
+* `sudo`: Allows users to run programs with the security privileges of the superuser or root.
+* `vim`: A highly configurable text editor, an improvement over the vi editor.
+* `wget`: A utility for non-interactive downloading of files from the web.
+* `unzip`: Extracts files from ZIP archives.
+* `g++`: The GNU C++ compiler.
+* `cmake`: Cross-platform tool to manage the build process of software.
+* `curl`: Command-line tool for transferring data with URL syntax.
+* `pkg-config`: Helper tool used when compiling applications and libraries.
+* `libssl-dev`: Development files for OpenSSL (used for implementing SSL and TLS).
+* `libsasl2-dev`: Development files for the Cyrus SASL library (authentication abstraction layer).
+* `git`: Distributed version control system.
+* `python3`: The Python 3.x interpreter.
+
+> Note: By using the -y flag with apt-get install, we're telling the system to assume "yes" as an answer to all prompts, making the installation non-interactive.
+
+## **MongoDB C Driver**
+
+The MongoDB C driver, often referred to as libmongoc, is essential for several reasons:
+
+* `Foundation`: It provides a foundational layer for communicating with MongoDB in C.
+* `Performance`: Being written in C, it offers high-performance interactions with the database.
+* `Compatibility`: It ensures consistent behavior and compatibility with various MongoDB server versions.
+* `Basis for Other Drivers`: Higher-level MongoDB drivers, like the C++ driver, are built upon it.
+* `Portability`: It can be used in environments where only C libraries are feasible or preferred.
+
+**1. Download the MongoDB C Driver**
+
+```
+wget https://github.com/mongodb/mongo-c-driver/releases/download/1.24.4/mongo-c-driver-1.24.4.tar.gz
+```
+
+This command downloads the MongoDB C Driver source code tarball from the given URL.
+
+* `wget` is a utility for non-interactive downloading of files from the web.
+* It will fetch the version 1.24.4 of the MongoDB C Driver.
+
+**2. Unzip the MongoDB C Driver**
+
+```
+tar -xzvf mongo-c-driver-1.24.4.tar.gz
+```
+
+This command extracts the tarball (compressed file) that was downloaded.
+
+* `tar` is a utility tool for archiving.
+* The flags `-xzvf` stand for:
+
+  * -x: Extract.
+  * -z: Through gzip.
+  * -v: Verbose mode; show the progress in the terminal.
+  * -f: Filename; use archive file.
+
+**3. Navigate into mongo-c-driver-1.24.4/build to make configuration process**
+
+`mongo-c-driver-1.24.4/build`
+
+This command runs the CMake configuration process, which sets up the build according to the specifications given in the CMake files.
+
+```
+cmake ..
+```
+
+* `cmake` is a tool that helps in the build process for software projects.
+* The .. argument tells CMake to use the `CMakeLists.txt` file in the parent directory as its source.
+
+This command tells CMake to start the build process with the given configuration and then install the built software.
+
+```
+cmake --build . --config RelWithDebInfo --target install
+```
+
+* `--config RelWithDebInfo`: Build type configuration, typically used to provide a mix of optimization and debugging information.
+* `--target install`: Specifies that after building, the software should be installed (typically to system directories).
+
+## **MongoDB C++ Driver**
+
+The MongoDB C++ driver, often termed mongocxx, is crucial for several reasons:
+
+* `Object-Oriented Abstraction`: It provides a C++ interface, allowing developers to interact with MongoDB in a more idiomatic C++ way.
+* `Feature-Rich`: It offers a more extensive set of functionalities tailored for C++ development, including exception handling and RAII principles.
+* `Type Safety`: Leveraging C++'s strong type system, it ensures safer database interactions.
+* `Integration`: Easily integrates with modern C++ applications and frameworks.
+* `Dependence on C Driver`: It's built on top of the C driver, ensuring consistent and efficient database communication.
+
+**1. Download MongoDB C++ Driver**
+
+```
+wget https://github.com/mongodb/mongo-cxx-driver/releases/download/r3.7.0/mongo-cxx-driver-r3.7.0.tar.gz
+```
+
+This command downloads the MongoDB C++ Driver source code tarball from the provided URL.
+
+**2. Unzip the Mongodb C++ driver**
+
+```
+tar -xzvf mongo-cxx-driver-r3.7.0.tar.gz
+```
+
+This command extracts the tarball (compressed file) that was downloaded.
+
+**3. Navigate into mongo-cxx-driver-r3.7.0/build to make configuration process**
+
+`mongo-cxx-driver-r3.7.0/build`
+
+This command configures the build process using CMake.
+
+```
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
+```
+
+* `cmake` is a cross-platform tool used for build process configuration.
+* `-G "Unix Makefiles"`: This specifies that the output of CMake should be makefiles tailored for Unix systems.
+* `-DCMAKE_BUILD_TYPE=Release`: Sets the type of build to "Release", which optimizes the resulting binaries for performance.
+* `-DCMAKE_INSTALL_PREFIX=/usr/local`: Specifies the directory where the driver will be installed.
+
+This command instructs CMake to start the build process and then install the built software.
+
+```
+cmake --build . --target install
+```
+
+* `--target install`: Indicates that after building, the software should be installed (typically to system directories).
+
+## **Extract Crow Framework**
+
+**1. Download the Crow framework**
+
+```
+wget https://github.com/CrowCpp/Crow/releases/download/v1.0%2B5/crow-v1.0+5.tar.gz
+```
+
+Downloads the Crow framework source code tarball from the provided URL.
+
+**2. Create a new directory named crow. This directory will be used to house the extracted files.**
+
+```
+mkdir crow
+```
+
+**3. Unzip the crow framework into crow directory**
+
+```
+tar xvfz crow-v1.0+5.tar.gz -C crow --strip-components=1
+```
+
+* `tar` is a utility used for archiving.
+* `-C crow`: Specifies the directory where the extracted files will be placed.
+* `--strip-components=1`: Modifies the extraction process to skip the top-level directory inside the tarball, essentially flattening the structure by one level. This can be particularly useful when the tarball contains a single top-level directory that you want to bypass.
+
+## **Extract Boost Libraries**
+
+**1. Download Boost Libraries**
+
+```
+wget https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.tar.gz
+```
+
+Downloads the Boost Libraries from the provided URL.
+
+**2. Unzip the boost libraries**
+
+```
+tar -xzvf boost_1_83_0.tar.gz
+```
 
 ## **Build the Application**
 
