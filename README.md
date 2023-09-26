@@ -416,7 +416,7 @@ cmake_minimum_required(VERSION 3.15)
 project(restapicpp)
 
 # Define the include directories
-set(INCLUDE_PATHS /app/boost_1_83_0 /app/crow/include)
+set(INCLUDE_PATHS ./boost_1_83_0 ./crow/include)
 
 # Add the executable target
 add_executable(restapicpp main.cpp)
@@ -573,7 +573,7 @@ This command updates the package list on your Ubuntu system. This ensures that y
 **2. Install Required Packages**
 
 ```
-apt-get install -y sudo vim wget unzip g++ cmake curl pkg-config libssl-dev libsasl2-dev git python3
+apt-get install -y sudo vim wget unzip g++ cmake curl pkg-config libssl-dev libsasl2-dev git python3 nano
 ``` 
 
 This command installs a list of specified packages. The -y flag automatically confirms the installation, avoiding any prompts to the user.
