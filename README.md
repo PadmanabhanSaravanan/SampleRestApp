@@ -777,7 +777,7 @@ make
 * Execute the application
 
 ```
-./restapicpp
+./restapicpp &
 ```
 
 Once executed, it will start a web server on a specified port 8080
