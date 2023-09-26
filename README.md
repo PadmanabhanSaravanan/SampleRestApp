@@ -19,41 +19,41 @@ This documentation covers the set of an environment with MongoDB C/C++ drivers, 
 **1. Sign in to MongoDB Atlas**
 
 * If you already have a MongoDB Atlas account, navigate to the [MongoDB Atlas login page](https://account.mongodb.com/account/login) and enter your credentials.
-* If you don't have an account, you'll need to create one. Click on "Register" and provide the required details.
+* If you don't have an account, you'll need to create one. Click on "Signup" and provide the required details.
+* After clicking on signup you will be sent email confirmation after confirmation you login into mongodb atlas.
 
 **2. Choose the Free Version**
 
-* After logging in (or signing up and logging in), you'll be presented with an option to build a new cluster. Choose the "Free" tier, which is known as the M0 Sandbox tier. This tier will provide you with 512 MB of storage and is suitable for small-scale development.
+* After logging in (or signing up and logging in), you'll be presented with an option to build a new deployment. Choose the "Free" tier, which is known as the M0 Sandbox tier. This tier will provide you with 512 MB of storage and is suitable for small-scale development.
 * Choose the cloud provider and region that's most suitable for you. Some options might be grayed out, as they're not available for the free tier.
 
 **3. Setup Cluster**
 
 * Once you've chosen the free version, MongoDB Atlas will begin setting up your cluster. This process may take a few minutes.
 
-**4. Access the Cluster's Dashboard**
+**4. Create Database User**
 
-* After the cluster is set up, click on the cluster's name to go to its dashboard.
+* Fill in the desired username and password for this user. Be sure to note this password, as you will need it later.
+* Enable access for any network(s) that need to read and write data to your cluster.(My Local Environment)
+* Set entries to your IP Access List (0.0.0.0)
+* Finish and close
 
 **5. Create Database & Collection**
 
-* From the cluster's dashboard, click on the "Collections" button.
-* Then, click on the "Create Database" button.
+* From the Data Service dashboard, click on the "Database" button.
+* Then, click on the "Browse Collections" button.
+* click "Add My Own Data" button that will navigate to create database.
 * Name the database "TodoRecords".
-* Immediately create a new collection within this database named "TodoCollection".
+* Name the collection "TodoCollection".
+* Then,click on create.
 
-**6. Create Database User**
+**6. Update the URI with Password**
 
-* In the left sidebar of MongoDB Atlas, under the "Security" section, select "Database Access".
-* Click on the "Add New Database User" button.
-* Fill in the desired username and password for this user. Be sure to note this password, as you will need it later.
-* Assign the required roles for this user, such as "readWriteAnyDatabase" if you want this user to have read and write permissions for any database.
-
-**7. Update the URI with Password**
-
-* Go back to the cluster's dashboard and click on the "CONNECT" button.
+* Go back to the Data Service dashboard and click on the "CONNECT" button.
 * Choose "Connect your application".
 * Select the C++ driver and the latest version.
 * You'll be given a connection string (URI). Replace <password> in this URI with the password of the user you just created.
+* Copy the URI for further reference.
 
 ## **Essential Packages on Ubuntu**
 
