@@ -1,4 +1,4 @@
-# RestApiCpp Documentatioln
+# RestApiCpp Documentation
 
 This documentation covers the set of an environment with MongoDB C/C++ drivers, Crow (a micro web framework), and Boost libraries.
 
