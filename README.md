@@ -1,6 +1,6 @@
 # RestApiCpp Documentation
 
-This documentation covers the set of an environment with MongoDB C/C++ drivers, Crow (a micro web framework), and Boost libraries.
+This documentation covers the set up an environment with MongoDB C/C++ drivers, Crow (a micro web framework), and Boost libraries.
 
 ## **Table of Content**
 
