@@ -22,7 +22,7 @@ string getView(const string& filename, context& x) {
 }
 
 // Create a document from the given key-value pairs.
-bsoncxx::document::value createDocument(const vector<pair<string, string>>& keyValues)
+bsoncxx::document::value createTodo(const vector<pair<string, string>>& keyValues)
 {
 	bsoncxx::builder::stream::document document{};
 	for (auto& keyValue : keyValues)
@@ -33,13 +33,13 @@ bsoncxx::document::value createDocument(const vector<pair<string, string>>& keyV
 }
 
 // Add the document to the given collection.
-void insertDocument(mongocxx::collection& collection, const bsoncxx::document::value& document)
+void insertTodo(mongocxx::collection& collection, const bsoncxx::document::value& document)
 {
 	collection.insert_one(document.view());
 }
 
 // Find a document from the given key-value pairs and return true if found.
-bool findDocument(mongocxx::collection& collection, const string& key, const string& value)
+bool findTodo(mongocxx::collection& collection, const string& key, const string& value)
 {
 	// Create the query filter
 	auto filter = bsoncxx::builder::stream::document{} << key << value << bsoncxx::builder::stream::finalize;
@@ -55,5 +55,5 @@ bool findDocument(mongocxx::collection& collection, const string& key, const str
 //Pass the given collection and key-value pairs.
 bool findTodoRecord(mongocxx::collection& collection, const string& id)
 {
-	return findDocument(collection, "Id", id);
+	return findTodo(collection, "Id", id);
 }

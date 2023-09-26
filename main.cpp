@@ -46,7 +46,7 @@ int main()
 
 		if (!id_already_present) {
 			// ID is not present, so insert the new record
-			insertDocument(collection, createDocument({
+			insertTodo(collection, createTodo({
 				{"Id", std::string(request_body["Id"])},
 				{"firstName", std::string(request_body["firstName"])},
 				{"lastName", std::string(request_body["lastName"])},
@@ -63,5 +63,5 @@ int main()
 
 	//set the port, set the app to run on multiple threads, and run the app
 	app.bindaddr("127.0.0.1").port(8080).multithreaded().run();
-	
+
 }
