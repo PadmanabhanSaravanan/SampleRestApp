@@ -10,38 +10,127 @@ apt-get update
 
 2.  apt-get install -y sudo vim wget unzip g++ cmake curl pkg-config libssl-dev libsasl2-dev git python3 nano
 
+```c
+apt-get install -y sudo vim wget unzip g++ cmake curl pkg-config libssl-dev libsasl2-dev git python3 nano
+```
+
 **MongoDB C Driver**
 
 3.  wget https://github.com/mongodb/mongo-c-driver/releases/download/1.24.4/mongo-c-driver-1.24.4.tar.gz
+
+```python
+wget https://github.com/mongodb/mongo-c-driver/releases/download/1.24.4/mongo-c-driver-1.24.4.tar.gz
+```
+
 4.  tar -xzvf mongo-c-driver-1.24.4.tar.gz
+
+```python
+tar -xzvf mongo-c-driver-1.24.4.tar.gz
+```
+
 5.  cd mongo-c-driver-1.24.4/build
+
+```python
+cd mongo-c-driver-1.24.4/build
+```
+
 6.  cmake ..
+
+```python
+cmake ..
+```
+
 7.  cmake --build . --config RelWithDebInfo --target install
+
+```python
+cmake --build . --config RelWithDebInfo --target install
+```
+
 8.  cd ../..
+
+```python
+d ../..
+```
 
 **MongoDB C++ Driver**
 
 9.  wget https://github.com/mongodb/mongo-cxx-driver/releases/download/r3.7.0/mongo-cxx-driver-r3.7.0.tar.gz
+
+```python
+wget https://github.com/mongodb/mongo-cxx-driver/releases/download/r3.7.0/mongo-cxx-driver-r3.7.0.tar.gz
+```
+
 10.  tar -xzvf mongo-cxx-driver-r3.7.0.tar.gz
+
+```python
+tar -xzvf mongo-cxx-driver-r3.7.0.tar.gz
+```
+
 11.  cd mongo-cxx-driver-r3.7.0/build
+
+```python
+cd mongo-cxx-driver-r3.7.0/build
+```
+
 12.  cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
+
+```python
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
+```
+
 13.  cmake --build . --target install
+
+```python
+cmake --build . --target install
+```
+
 14.  cd ../..
+
+```python
+cd ../..
+```
 
 **Extract Crow Framework**
 
 15.  wget https://github.com/CrowCpp/Crow/releases/download/v1.0%2B5/crow-v1.0+5.tar.gz
+
+```python
+wget https://github.com/CrowCpp/Crow/releases/download/v1.0%2B5/crow-v1.0+5.tar.gz
+```
+
 16.  mkdir crow
+
+```python
+mkdir crow
+```
+
 17.  tar xvfz crow-v1.0+5.tar.gz -C crow --strip-components=1
+
+```python
+tar xvfz crow-v1.0+5.tar.gz -C crow --strip-components=1
+```
 
 **Extract Boost Libraries**
 
 18.  wget https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.tar.gz
+
+```python
+wget https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.tar.gz
+```
+
 19.  tar -xzvf boost_1_83_0.tar.gz
+
+```python
+tar -xzvf boost_1_83_0.tar.gz
+```
 
 <br>
 
 20.  nano main.cpp
+
+```python
+nano main.cpp
+```
 
 ```c
 #include "Methods.h"
@@ -114,6 +203,10 @@ int main()
 
 21.  nano Methods.h
 
+```python
+nano Methods.h
+```
+
 ```c
 #pragma once
 #include <mongocxx/client.hpp>
@@ -171,6 +264,10 @@ bool findTodoRecord(mongocxx::collection& collection, const string& id)
 
 22.  nano CMakeLists.txt
 
+```python
+nano CMakeLists.txt
+```
+
 ```cmake
 cmake_minimum_required(VERSION 3.15)
 project(restapicpp)
@@ -206,10 +303,33 @@ set_target_properties(restapicpp PROPERTIES
 **Build the Application**
 
 23.  mkdir builds
+
+```python
+kdir builds
+```
+
 24.  cd build/
+
+```python
+cd build/
+```
+
 25.  cmake ..
+
+```python
+cmake ..
+```
+
 26.  make
+
+```python
+make
+```
 
 **Run the Application**
 
 27.  ./restapicpp
+
+```python
+./restapicpp
+```
