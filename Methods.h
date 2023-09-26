@@ -14,14 +14,7 @@ using namespace crow::mustache;
 using bsoncxx::builder::basic::kvp;
 using bsoncxx::builder::basic::make_document;
 
-
-//Load the HTML content and render it using mustache
-string getView(const string& filename, context& x) {
-	auto page = load(filename + ".html");
-	return page.render_string(x);
-}
-
-// Create a document from the given key-value pairs.
+// Create a todo from the given key-value pairs.
 bsoncxx::document::value createTodo(const vector<pair<string, string>>& keyValues)
 {
 	bsoncxx::builder::stream::document document{};
@@ -32,13 +25,13 @@ bsoncxx::document::value createTodo(const vector<pair<string, string>>& keyValue
 	return document << bsoncxx::builder::stream::finalize;
 }
 
-// Add the document to the given collection.
+// Add the todo to the given collection.
 void insertTodo(mongocxx::collection& collection, const bsoncxx::document::value& document)
 {
 	collection.insert_one(document.view());
 }
 
-// Find a document from the given key-value pairs and return true if found.
+// Find a todo from the given key-value pairs and return true if found.
 bool findTodo(mongocxx::collection& collection, const string& key, const string& value)
 {
 	// Create the query filter
