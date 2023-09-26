@@ -12,7 +12,7 @@ int main()
 	auto collection = conn["TodoRecords"]["TodoCollection"];//get collection from database
 
 	//API endpoint to read all documents
-	CROW_ROUTE(app, "/api/todo")
+	CROW_ROUTE(app, "/api/v1/todos")
 		([&collection](const request& req) {
 		mongocxx::options::find opts;
 		auto docs = collection.find({}, opts);
@@ -27,7 +27,7 @@ int main()
 			});
 
 	//API endpoint to insert document from the given json body
-	CROW_ROUTE(app, "/api/todo/add").methods(HTTPMethod::POST)
+	CROW_ROUTE(app, "/api/v1/todos").methods(HTTPMethod::POST)
 		([&collection](const request& req) {
 		crow::json::rvalue request_body = json::load(req.body);
 

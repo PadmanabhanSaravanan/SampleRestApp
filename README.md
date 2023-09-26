@@ -137,7 +137,7 @@ int main()
 	auto collection = conn["TodoRecords"]["TodoCollection"];//get collection from database
 
 	//API endpoint to read all todos
-	CROW_ROUTE(app, "/api/todo")
+	CROW_ROUTE(app, "/api/v1/todos")
 		([&collection](const request& req) {
 		mongocxx::options::find opts;
 		auto docs = collection.find({}, opts);
@@ -152,7 +152,7 @@ int main()
 			});
 
 	//API endpoint to insert todo from the given json body
-	CROW_ROUTE(app, "/api/todo/add").methods(HTTPMethod::POST)
+	CROW_ROUTE(app, "/api/v1/todos").methods(HTTPMethod::POST)
 		([&collection](const request& req) {
 		crow::json::rvalue request_body = json::load(req.body);
 
@@ -784,5 +784,4 @@ Once executed, it will start a web server on a specified port 8080
 
 you can curl to the port to check the web server is up & running by using end points.
 
-* `http://localhost:8080/api/todo`
-* `http://localhost:8080/api/todo/add`
+* `http://localhost:8080/api/v1/todos`
