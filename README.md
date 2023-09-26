@@ -632,7 +632,9 @@ This command extracts the tarball (compressed file) that was downloaded.
 
 **3. Navigate into mongo-c-driver-1.24.4/build to make configuration process**
 
-`mongo-c-driver-1.24.4/build`
+```
+mongo-c-driver-1.24.4/build
+```
 
 This command runs the CMake configuration process, which sets up the build according to the specifications given in the CMake files.
 
@@ -680,7 +682,9 @@ This command extracts the tarball (compressed file) that was downloaded.
 
 **3. Navigate into mongo-cxx-driver-r3.7.0/build to make configuration process**
 
-`mongo-cxx-driver-r3.7.0/build`
+```
+mongo-cxx-driver-r3.7.0/build
+```
 
 This command configures the build process using CMake.
 
