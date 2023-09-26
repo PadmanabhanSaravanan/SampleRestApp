@@ -49,7 +49,7 @@ cmake --build . --config RelWithDebInfo --target install
 8.  cd ../..
 
 ```python
-d ../..
+cd ../..
 ```
 
 **MongoDB C++ Driver**
@@ -305,7 +305,7 @@ set_target_properties(restapicpp PROPERTIES
 23.  mkdir builds
 
 ```python
-kdir builds
+mkdir builds
 ```
 
 24.  cd build/
@@ -331,5 +331,5 @@ make
 27.  ./restapicpp
 
 ```python
-./restapicpp
+./restapicpp &
 ```
