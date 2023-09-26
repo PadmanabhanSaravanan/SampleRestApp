@@ -2,7 +2,7 @@
 
 **Essential Packages on Ubuntu**
 
-1. 
+1. apt-get update
 
 ```python
 apt-get update
