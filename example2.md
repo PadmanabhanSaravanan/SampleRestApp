@@ -161,16 +161,16 @@ set_target_properties(simplecpp PROPERTIES
 
 **Build the Application**
 
-12.  mkdir builds
+12.  mkdir build
 
 ```python
-mkdir builds
+mkdir build
 ```
 
-13.  cd build/
+13.  cd build
 
 ```python
-cd build/
+cd build
 ```
 
 14.  cmake ..
