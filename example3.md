@@ -267,7 +267,7 @@ int main()
 			});
 
 		//API endpoint to read a specific todo by Id
-		CROW_ROUTE(app, "/api/v1/todos/<string>")
+		CROW_ROUTE(app, "/api/v1/todos/<string>").methods(HTTPMethod::GET)
 			([&collection](const string& id) {
 			// Create the query filter based on the provided Id
 			auto filter = bsoncxx::builder::stream::document{} << "Id" << id << bsoncxx::builder::stream::finalize;
