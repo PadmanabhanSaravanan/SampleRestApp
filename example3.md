@@ -1,4 +1,4 @@
-# Commands
+# Example 3
 
 **Essential Packages on Ubuntu**
 
@@ -14,39 +14,51 @@ apt-get update
 apt-get install -y sudo vim wget unzip g++ cmake curl pkg-config libssl-dev libsasl2-dev git python3 nano
 ```
 
+3. mkdir restapicpp  
+
+```python
+mkdir restapicpp   
+```
+
+4. cd restapicpp 
+
+```python
+cd restapicpp
+```
+
 **MongoDB C Driver**
 
-3.  wget https://github.com/mongodb/mongo-c-driver/releases/download/1.24.4/mongo-c-driver-1.24.4.tar.gz
+5.  wget https://github.com/mongodb/mongo-c-driver/releases/download/1.24.4/mongo-c-driver-1.24.4.tar.gz
 
 ```python
 wget https://github.com/mongodb/mongo-c-driver/releases/download/1.24.4/mongo-c-driver-1.24.4.tar.gz
 ```
 
-4.  tar -xzvf mongo-c-driver-1.24.4.tar.gz
+6.  tar -xzvf mongo-c-driver-1.24.4.tar.gz
 
 ```python
 tar -xzvf mongo-c-driver-1.24.4.tar.gz
 ```
 
-5.  cd mongo-c-driver-1.24.4/build
+7.  cd mongo-c-driver-1.24.4/build
 
 ```python
 cd mongo-c-driver-1.24.4/build
 ```
 
-6.  cmake ..
+8.  cmake ..
 
 ```python
 cmake ..
 ```
 
-7.  cmake --build . --config RelWithDebInfo --target install
+9.  cmake --build . --config RelWithDebInfo --target install
 
 ```python
 cmake --build . --config RelWithDebInfo --target install
 ```
 
-8.  cd ../..
+10.  cd ../..
 
 ```python
 cd ../..
@@ -54,37 +66,37 @@ cd ../..
 
 **MongoDB C++ Driver**
 
-9.  wget https://github.com/mongodb/mongo-cxx-driver/releases/download/r3.7.0/mongo-cxx-driver-r3.7.0.tar.gz
+11.  wget https://github.com/mongodb/mongo-cxx-driver/releases/download/r3.7.0/mongo-cxx-driver-r3.7.0.tar.gz
 
 ```python
 wget https://github.com/mongodb/mongo-cxx-driver/releases/download/r3.7.0/mongo-cxx-driver-r3.7.0.tar.gz
 ```
 
-10.  tar -xzvf mongo-cxx-driver-r3.7.0.tar.gz
+12.  tar -xzvf mongo-cxx-driver-r3.7.0.tar.gz
 
 ```python
 tar -xzvf mongo-cxx-driver-r3.7.0.tar.gz
 ```
 
-11.  cd mongo-cxx-driver-r3.7.0/build
+13.  cd mongo-cxx-driver-r3.7.0/build
 
 ```python
 cd mongo-cxx-driver-r3.7.0/build
 ```
 
-12.  cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
+14.  cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
 
 ```python
 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
 ```
 
-13.  cmake --build . --target install
+15.  cmake --build . --target install
 
 ```python
 cmake --build . --target install
 ```
 
-14.  cd ../..
+16.  cd ../..
 
 ```python
 cd ../..
@@ -92,19 +104,19 @@ cd ../..
 
 **Extract Crow Framework**
 
-15.  wget https://github.com/CrowCpp/Crow/releases/download/v1.0%2B5/crow-v1.0+5.tar.gz
+17.  wget https://github.com/CrowCpp/Crow/releases/download/v1.0%2B5/crow-v1.0+5.tar.gz
 
 ```python
 wget https://github.com/CrowCpp/Crow/releases/download/v1.0%2B5/crow-v1.0+5.tar.gz
 ```
 
-16.  mkdir crow
+18.  mkdir crow
 
 ```python
 mkdir crow
 ```
 
-17.  tar xvfz crow-v1.0+5.tar.gz -C crow --strip-components=1
+19.  tar xvfz crow-v1.0+5.tar.gz -C crow --strip-components=1
 
 ```python
 tar xvfz crow-v1.0+5.tar.gz -C crow --strip-components=1
@@ -112,13 +124,13 @@ tar xvfz crow-v1.0+5.tar.gz -C crow --strip-components=1
 
 **Extract Boost Libraries**
 
-18.  wget https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.tar.gz
+20.  wget https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.tar.gz
 
 ```python
 wget https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.tar.gz
 ```
 
-19.  tar -xzvf boost_1_83_0.tar.gz
+21.  tar -xzvf boost_1_83_0.tar.gz
 
 ```python
 tar -xzvf boost_1_83_0.tar.gz
@@ -126,7 +138,7 @@ tar -xzvf boost_1_83_0.tar.gz
 
 <br>
 
-20.  nano main.cpp
+22.  nano main.cpp
 
 ```python
 nano main.cpp
@@ -201,7 +213,7 @@ int main()
 }
 ```
 
-21.  nano Methods.h
+23.  nano Methods.h
 
 ```python
 nano Methods.h
@@ -262,7 +274,7 @@ bool findTodoRecord(mongocxx::collection& collection, const string& id)
 }
 ```
 
-22.  nano CMakeLists.txt
+24.  nano CMakeLists.txt
 
 ```python
 nano CMakeLists.txt
@@ -302,25 +314,25 @@ set_target_properties(restapicpp PROPERTIES
 
 **Build the Application**
 
-23.  mkdir builds
+25.  mkdir builds
 
 ```python
 mkdir builds
 ```
 
-24.  cd build/
+26.  cd build/
 
 ```python
 cd build/
 ```
 
-25.  cmake ..
+27.  cmake ..
 
 ```python
 cmake ..
 ```
 
-26.  make
+28.  make
 
 ```python
 make
@@ -328,7 +340,7 @@ make
 
 **Run the Application**
 
-27.  ./restapicpp
+29.  ./restapicpp
 
 ```python
 ./restapicpp &
