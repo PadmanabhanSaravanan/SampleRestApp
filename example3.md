@@ -207,7 +207,7 @@ int main()
 		}
 			});
 
-	//API endpoint to update document based on the given id in the JSON body
+	//API endpoint to update todo based on the given id in the JSON body
 		CROW_ROUTE(app, "/api/v1/todos").methods(HTTPMethod::PUT)
 		([&collection](const request& req) {
 		crow::json::rvalue request_body = json::load(req.body);
@@ -248,7 +248,7 @@ int main()
 
 		#undef DELETE
 
-	// endpoint to delete a document based on the given id in the JSON body
+	// endpoint to delete a todo based on the given id in the JSON body
 		CROW_ROUTE(app, "/api/v1/todos").methods(HTTPMethod::DELETE)
 		([&collection](const request& req) {
 		crow::json::rvalue request_body = json::load(req.body);
@@ -266,7 +266,7 @@ int main()
 		}
 			});
 
-		//API endpoint to read a specific document by Id
+		//API endpoint to read a specific todo by Id
 		CROW_ROUTE(app, "/api/v1/todos/<string>")
 			([&collection](const string& id) {
 			// Create the query filter based on the provided Id
