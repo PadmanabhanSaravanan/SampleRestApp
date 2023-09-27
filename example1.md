@@ -1,4 +1,4 @@
-# Example1.md
+# Example1
 
 **Essential Packages on Ubuntu**
 
