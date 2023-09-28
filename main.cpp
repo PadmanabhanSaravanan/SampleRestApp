@@ -6,7 +6,7 @@ int main()
 	crow::SimpleApp app; //define your crow application
 	set_global_base("."); //search for the files in current dir.
 	mongocxx::instance inst{};
-	string mongoConnect = std::string("mongodb+srv://Padmanabhan:password12345@cluster0.hzbnr30.mongodb.net/?retryWrites=true&w=majority");
+	string mongoConnect = std::string("your-mongodb-uri");
 	mongocxx::client conn{ mongocxx::uri{mongoConnect} };
 	auto collection = conn["TodoRecords"]["TodoCollection"];//get collection from database
 
