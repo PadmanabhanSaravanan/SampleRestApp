@@ -3,7 +3,7 @@ FROM ubuntu:latest
 
 # Update apt and install necessary dependencies
 RUN apt-get update && \
-    apt-get install -y sudo wget unzip g++ cmake curl pkg-config libssl-dev libsasl2-dev git python3 && \
+    apt-get install -y sudo wget unzip g++ cmake curl pkg-config libssl-dev libsasl2-dev git python3 nano vim && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
