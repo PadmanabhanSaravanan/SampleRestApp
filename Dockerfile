@@ -56,4 +56,4 @@ RUN cmake .. && make
 EXPOSE 8080
 
 # Command to run your CrowSample app
-CMD ["./CrowSample &"]
+CMD ["./restapicpp"]
