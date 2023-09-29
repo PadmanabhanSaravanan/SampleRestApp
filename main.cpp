@@ -6,7 +6,7 @@ int main()
 	crow::SimpleApp app; //define your crow application
 	set_global_base("."); //search for the files in current dir.
 	mongocxx::instance inst{};
-	string mongoConnect = std::string("your-mongodb-uri");
+	string mongoConnect = std::string("your_mongodb-uri");
 	mongocxx::client conn{ mongocxx::uri{mongoConnect} };
 	auto collection = conn["TodoRecords"]["TodoCollection"];//get collection from database
 
@@ -140,6 +140,6 @@ int main()
 
 
 	//set the port, set the app to run on multiple threads, and run the app
-	app.bindaddr("127.0.0.1").port(8080).multithreaded().run();
+	app.bindaddr("0.0.0.0").port(8080).multithreaded().run();
 
 }
