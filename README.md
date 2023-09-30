@@ -132,12 +132,12 @@ int main()
 	crow::SimpleApp app; //define your crow application
 	set_global_base("."); //search for the files in current dir.
 	mongocxx::instance inst{};
-	string mongoConnect = std::string("your-mongodb-uri");
+	string mongoConnect = std::string("your_mongodb_uri");
 	mongocxx::client conn{ mongocxx::uri{mongoConnect} };
 	auto collection = conn["TodoRecords"]["TodoCollection"];//get collection from database
 
 	//API endpoint to read all todos
-	CROW_ROUTE(app, "/api/v1/todos")
+	CROW_ROUTE(app, "/api/v1/todos").methods(HTTPMethod::GET)
 		([&collection](const request& req) {
 		mongocxx::options::find opts;
 		auto docs = collection.find({}, opts);
@@ -185,6 +185,85 @@ int main()
 			return crow::response(400, "ID already present in the database");
 		}
 			});
+
+	//API endpoint to update todo based on the given id in the JSON body
+		CROW_ROUTE(app, "/api/v1/todos").methods(HTTPMethod::PUT)
+		([&collection](const request& req) {
+		crow::json::rvalue request_body = json::load(req.body);
+
+		if (!request_body.has("Id")) {
+			return crow::response(400, "Required key 'Id' missing in request body");
+		}
+
+		std::string id = std::string(request_body["Id"]);
+		bool id_already_present = findTodoRecord(collection, id);
+
+		if (id_already_present) {
+			// ID is present, so update the record
+			 vector<pair<string, string>> updates;
+			 for (auto& item : request_body) {
+				 string key = item.key();
+				 if (key != "Id") {
+					 try {
+						 string value = item.s();
+						 updates.push_back({ key, value });
+					 }
+					 catch (const std::runtime_error&) {
+						 // Not a string, ignore or handle accordingly
+					 }
+				 }
+			 }
+			if (updateTodo(collection, "Id", id, updates)) {
+				return crow::response(200, "Todo Updated Successfully!!");
+			}
+			else {
+				return crow::response(500, "Failed to update Todo");
+			}
+		}
+		else {
+			return crow::response(400, "ID not found in the database");
+		}
+			});
+
+		#undef DELETE
+
+	// endpoint to delete a todo based on the given id in the JSON body
+		CROW_ROUTE(app, "/api/v1/todos").methods(HTTPMethod::DELETE)
+		([&collection](const request& req) {
+		crow::json::rvalue request_body = json::load(req.body);
+
+		if (!request_body.has("Id")) {
+			return crow::response(400, "Required key 'Id' missing in request body");
+		}
+
+		std::string id = std::string(request_body["Id"]);
+		if (deleteTodo(collection, "Id", id)) {
+			return crow::response(200, "Todo Deleted Successfully!!");
+		}
+		else {
+			return crow::response(400, "Failed to delete Todo with given ID");
+		}
+			});
+
+		//API endpoint to read a specific todo by Id
+		CROW_ROUTE(app, "/api/v1/todos/<string>").methods(HTTPMethod::GET)
+			([&collection](const string& id) {
+			// Create the query filter based on the provided Id
+			auto filter = bsoncxx::builder::stream::document{} << "Id" << id << bsoncxx::builder::stream::finalize;
+
+			auto maybe_result = collection.find_one(filter.view());
+
+			if (maybe_result) {
+				auto doc = maybe_result->view();
+				crow::json::wvalue dto;
+				dto["todo"] = json::load(bsoncxx::to_json(doc));
+				return crow::response{ dto };
+			}
+			else {
+				return crow::response(404, "Todo not found");
+			}
+				});
+
 
 	//set the port, set the app to run on multiple threads, and run the app
 	app.bindaddr("127.0.0.1").port(8080).multithreaded().run();
@@ -297,38 +376,75 @@ using bsoncxx::builder::basic::make_document;
 // Create a todo from the given key-value pairs.
 bsoncxx::document::value createTodo(const vector<pair<string, string>>& keyValues)
 {
-	bsoncxx::builder::stream::document document{};
-	for (auto& keyValue : keyValues)
-	{
-		document << keyValue.first << keyValue.second;
-	}
-	return document << bsoncxx::builder::stream::finalize;
+    bsoncxx::builder::stream::document document{};
+    for (auto& keyValue : keyValues)
+    {
+        document << keyValue.first << keyValue.second;
+    }
+    return document << bsoncxx::builder::stream::finalize;
 }
 
 // Add the todo to the given collection.
 void insertTodo(mongocxx::collection& collection, const bsoncxx::document::value& document)
 {
-	collection.insert_one(document.view());
+    collection.insert_one(document.view());
 }
 
 // Find a todo from the given key-value pairs and return true if found.
 bool findTodo(mongocxx::collection& collection, const string& key, const string& value)
 {
-	// Create the query filter
-	auto filter = bsoncxx::builder::stream::document{} << key << value << bsoncxx::builder::stream::finalize;
-	//Add query filter argument in find
-	auto cursor = collection.find({ filter });
-	auto count = std::distance(cursor.begin(), cursor.end());
-	if (count != 0L) {
-		return true;
-	}
-	return false;
+    // Create the query filter
+    auto filter = bsoncxx::builder::stream::document{} << key << value << bsoncxx::builder::stream::finalize;
+    //Add query filter argument in find
+    auto cursor = collection.find({ filter });
+    auto count = std::distance(cursor.begin(), cursor.end());
+    if (count != 0L) {
+        return true;
+    }
+    return false;
 }
 
 //Pass the given collection and key-value pairs.
 bool findTodoRecord(mongocxx::collection& collection, const string& id)
 {
-	return findTodo(collection, "Id", id);
+    return findTodo(collection, "Id", id);
+}
+
+// Update a todo in the given collection based on a specific key-value pair with new key-value pairs.
+bool updateTodo(mongocxx::collection& collection,
+    const string& key, const string& value,
+    const vector<pair<string, string>>& newKeyValues)
+{
+    // Create the query filter to find the document to update
+    auto filter = bsoncxx::builder::stream::document{} << key << value << bsoncxx::builder::stream::finalize;
+
+    // Create the new values for the document
+    bsoncxx::builder::stream::document updated_document{};
+    for (auto& keyValue : newKeyValues)
+    {
+        updated_document << keyValue.first << keyValue.second;
+    }
+
+    auto update_doc = bsoncxx::builder::stream::document{} << "$set" << updated_document << bsoncxx::builder::stream::finalize;
+
+    // Update the document
+    auto result = collection.update_one(filter.view(), update_doc.view());
+
+    // Return true if at least one document was modified
+    return result && result->modified_count() > 0;
+}
+
+// Delete a todo from the given collection based on a specific key-value pair.
+bool deleteTodo(mongocxx::collection& collection, const string& key, const string& value)
+{
+    // Create the query filter to find the document to delete
+    auto filter = bsoncxx::builder::stream::document{} << key << value << bsoncxx::builder::stream::finalize;
+
+    // Delete the document
+    auto result = collection.delete_one(filter.view());
+
+    // Return true if at least one document was deleted
+    return result && result->deleted_count() > 0;
 }
 ```
 
@@ -416,7 +532,7 @@ cmake_minimum_required(VERSION 3.15)
 project(restapicpp)
 
 # Define the include directories
-set(INCLUDE_PATHS ./boost_1_83_0 ./crow/include)
+set(INCLUDE_PATHS /app/boost_1_83_0 /app/crow/include)
 
 # Add the executable target
 add_executable(restapicpp main.cpp)
@@ -773,15 +889,85 @@ make
 
 ## **Run the Application**
 
-* Ensure that you are in the directory containing the restapicpp executable.
-* Execute the application
+**Once executed, it will start a web server on a specified port 8080**
 
+**POST Request:**
+
+Posting a New Todo Item to the API
+
+```python
+curl --location --request POST 'http://localhost:8080/api/v1/todos' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "Id": "1",
+    "firstName": "firstName",
+    "lastName": "lastName",
+    "emailId": "email@gmail.com",
+    "location": "location"
+}
 ```
-./restapicpp &
+
+**Expected Output:**
+
+```python
+Todo Added Successfully!!
 ```
 
-Once executed, it will start a web server on a specified port 8080
+**GET Request:**
 
-you can curl to the port to check the web server is up & running by using end points.
+Fetching All Todo Items from the API.
 
-* `http://localhost:8080/api/v1/todos`
+```python
+curl --location --request GET 'http://localhost:8080/api/v1/todos'
+```
+
+**Expected Output:**
+
+```python
+{"todos":[{"location":"location","lastName":"lastName","emailId":"email@gmail.com","firstName":"firstName","Id":"1","_id":{"$oid":"6514fb50f82cdde1bd0dfe11"}}]}
+```
+
+**PUT Request**
+
+```python
+curl --location --request PUT 'http://localhost:8080/api/v1/todos' \
+--header 'Content-Type: application/json' \
+--data '{
+    "Id": "1",
+    "location": "Chennai"
+}'
+```
+
+**Expected Output:**
+
+```python
+Todo Updated Successfully!!
+```
+
+**DELETE Request**
+
+```python
+curl --location --request DELETE 'http://localhost:8080/api/v1/todos' \
+--header 'Content-Type: application/json' \
+--data '{
+    "Id":"1"
+}'
+```
+
+**Expected Output:**
+
+```python
+Todo Deleted Successfully!!
+```
+
+**GET BY ID Request**
+
+```python
+curl --location 'http://localhost:8080/api/v1/todos/1'
+```
+
+**Expected Output:**
+
+```python
+{"todo":{"location":"Chennai","lastName":"lastName","emailId":"email@gmail.com","firstName":"firstName","Id":"1","_id":{"$oid":"6515254668b0190b790b0fd1"}}}
+```

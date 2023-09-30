@@ -72,54 +72,26 @@ nano main.cpp
 #include "crow.h"
 //#include "crow_all.h"
 
-
-
-struct AdminAreaGuard
+struct Middleware1
 {
     struct context
     {};
 
     void before_handle(crow::request& req, crow::response& res, context& ctx)
     {
-       /* if (req.remote_ip_address != ADMIN_IP)
-        {
-            res.code = 403;
-            res.end();
-        }*/
-                std::cout << "Middleware 1" << std::endl;
+        std::cout << "Request Processing in Middleware 1" << std::endl;
     }
 
     void after_handle(crow::request& req, crow::response& res, context& ctx)
     {
-        std::cout << "Middleware 1 rep" << std::endl;
-    }
-};
-
-struct AdminAreaGuard2
-{
-    struct context
-    {};
-
-    void before_handle(crow::request& req, crow::response& res, context& ctx)
-    {
-       /* if (req.remote_ip_address != ADMIN_IP)
-        {
-            res.code = 403;
-            res.end();
-        }*/
-		std::cout << "Middleware 2" << std::endl;
-    }
-
-    void after_handle(crow::request& req, crow::response& res, context& ctx)
-    {
-	std::cout << "Middleware 2 rep" << std::endl;
+        std::cout << "Response Processing in Middleware 1" << std::endl;
     }
 };
 
 
 int main()
 {
-    crow::App<AdminAreaGuard,AdminAreaGuard2> app; //define your crow application
+    crow::App<Middleware1> app; //define your crow application
 
    
 
@@ -191,4 +163,24 @@ make
 
 ```python
 ./simplecpp &
+```
+
+**Once executed, it will start a web server on a specified port 8080**
+
+17. curl http://localhost:8080
+
+```python
+curl http://localhost:8080
+```
+
+**Excpected Output**
+
+```python
+HelloWorld
+
+
+Request: 127.0.0.1:55324 0x55aad70d8d30 HTTP/1.1 GET /
+Request Processing in Middleware 1
+Response: 0x55aad70d8d30 / 200 0
+Response Processing in Middleware 1
 ```

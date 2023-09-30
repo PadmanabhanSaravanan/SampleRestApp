@@ -147,13 +147,13 @@ nano main.cpp
 ```c
 #include "Methods.h"
 
-// ********************************************** Main **********************************************
+// ********************************************* Main *********************************************
 int main()
 {
 	crow::SimpleApp app; //define your crow application
 	set_global_base("."); //search for the files in current dir.
 	mongocxx::instance inst{};
-	string mongoConnect = std::string("your_mongodb_uri");
+	string mongoConnect = std::string("your_mongodburi");
 	mongocxx::client conn{ mongocxx::uri{mongoConnect} };
 	auto collection = conn["TodoRecords"]["TodoCollection"];//get collection from database
 
@@ -207,7 +207,7 @@ int main()
 		}
 			});
 
-	//API endpoint to update todo based on the given id in the JSON body
+	//API endpoint to update document based on the given id in the JSON body
 		CROW_ROUTE(app, "/api/v1/todos").methods(HTTPMethod::PUT)
 		([&collection](const request& req) {
 		crow::json::rvalue request_body = json::load(req.body);
@@ -248,7 +248,7 @@ int main()
 
 		#undef DELETE
 
-	// endpoint to delete a todo based on the given id in the JSON body
+	// endpoint to delete a document based on the given id in the JSON body
 		CROW_ROUTE(app, "/api/v1/todos").methods(HTTPMethod::DELETE)
 		([&collection](const request& req) {
 		crow::json::rvalue request_body = json::load(req.body);
@@ -266,7 +266,7 @@ int main()
 		}
 			});
 
-		//API endpoint to read a specific todo by Id
+		//API endpoint to read a specific document by Id
 		CROW_ROUTE(app, "/api/v1/todos/<string>").methods(HTTPMethod::GET)
 			([&collection](const string& id) {
 			// Create the query filter based on the provided Id
@@ -287,7 +287,7 @@ int main()
 
 
 	//set the port, set the app to run on multiple threads, and run the app
-	app.bindaddr("127.0.0.1").port(8080).multithreaded().run();
+	app.bindaddr("0.0.0.0").port(8080).multithreaded().run();
 
 }
 ```
@@ -460,4 +460,87 @@ make
 
 ```python
 ./restapicpp &
+```
+
+**Once executed, it will start a web server on a specified port 8080**
+
+**POST Request:**
+
+Posting a New Todo Item to the API
+
+```python
+curl --location --request POST 'http://localhost:8080/api/v1/todos' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "Id": "1",
+    "firstName": "firstName",
+    "lastName": "lastName",
+    "emailId": "email@gmail.com",
+    "location": "location"
+}
+```
+
+**Expected Output:**
+
+```python
+Todo Added Successfully!!
+```
+
+**GET Request:**
+
+Fetching All Todo Items from the API.
+
+```python
+curl --location --request GET 'http://localhost:8080/api/v1/todos'
+```
+
+**Expected Output:**
+
+```python
+{"todos":[{"location":"location","lastName":"lastName","emailId":"email@gmail.com","firstName":"firstName","Id":"1","_id":{"$oid":"6514fb50f82cdde1bd0dfe11"}}]}
+```
+
+**PUT Request**
+
+```python
+curl --location --request PUT 'http://localhost:8080/api/v1/todos' \
+--header 'Content-Type: application/json' \
+--data '{
+    "Id": "1",
+    "location": "Chennai"
+}'
+```
+
+**Expected Output:**
+
+```python
+Todo Updated Successfully!!
+```
+
+**DELETE Request**
+
+```python
+curl --location --request DELETE 'http://localhost:8080/api/v1/todos' \
+--header 'Content-Type: application/json' \
+--data '{
+    "Id":"1"
+}'
+```
+
+**Expected Output:**
+
+```python
+Todo Deleted Successfully!!
+```
+
+**GET BY ID Request**
+
+```python
+curl --location 'http://localhost:8080/api/v1/todos/1'
+```
+
+**Expected Output:**
+
+```python
+{"todo":{"location":"Chennai","lastName":"lastName","emailId":"email@gmail.com","firstName":"firstName","Id":"1","_id":{"$oid":"6515254668b0190b790b0fd1"}}}
 ```
